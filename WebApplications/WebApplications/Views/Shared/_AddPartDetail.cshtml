@@ -1,0 +1,16 @@
+﻿@model PartsDataInputViewModel
+<div class="form-group row mb-1">
+    <div class="col-6">
+        <label asp-for="PartName"></label>
+        <input type="text" asp-for="PartName" class="form-control" />
+        <span asp-validation-for="PartName" class="text-danger"></span>
+    </div>
+    <div class="col-5">
+        <label asp-for="PartsPrice"></label>
+        <input type="text" asp-for="PartsPrice" class="form-control" />
+        <span asp-validation-for="PartsPrice" class="text-danger"></span>
+    </div>
+    <div class="col-1">
+        <button type="button" id="add" class="btn btn-secondary btn-sm mt-4">Add</button>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+﻿@model IEnumerable<Brand>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+<ul>
+    @foreach(var b in Model)
+    {
+        <li>@b.Name</li>
+    }
+</ul>
+

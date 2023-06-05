@@ -1,0 +1,92 @@
+10. __file contains the class designated to configure the request pipeline that handles all requests
+made to the application
+5. a. Global.asax
+b. Web.config
+c. Program.cs
+d. The startup.cs
+11. In ASP.NET MVC, __is the markup language used for expressing HTML-like templates a. Razor
+12. ~/Areas/{2}/Views/{1}/{0}.cshtml Here {2} defines
+a. View Name
+b. Area Name
+13. __is ultimately mapped to a pair of controller and action names.
+a. A handler
+b. A route
+c. A action
+d. A view
+14. A data token is defined with the route and is
+a. a name/value pair
+15.How many way you can declare a controller
+a. 2
+b. 6
+c. 5
+d. 3
+16. Which one is True
+a. You can pass multiple strings to the AcceptVerbs attribute
+b. You can pass only one strings to the AcceptVerbs attribute
+c. You can’t pass any strings to the AcceptVerbs attribute
+17. How many syntax Contains a Razor file
+1. 5 2.
+3  2
+4. 1
+18. A Razor file is a
+a. text file
+b. xml file
+c. pdf file
+d. docx file
+19. A Razor file contains
+a. HTML expressions
+b. code expressions
+c. both
+d. none
+20. Multiple tokens (for example, markup and code) can be combined in the same expression using
+a. {}
+b. ()
+c. []
+d. @
+21. Which property of claim identifies the role of the user in a given application a. Type
+b. Value
+c. Issuer
+d. OriginalIssuer
+22. Which attribute on an action method restricts its use to only authenticated users. a. Authorize
+b. AllowAnonymous
+c. ApiController
+d. Identity
+23. All properties of claim Class are
+a. Read-only
+ Which one is Entity Framework installation command?      Ans: pm> install – package Entityframwork page-17
+2. On model class/Dbset class which property converted to database primary field automatically
+Ans: ID  page-19
+3. Why we declare a property virtual      Ans: For getting lazy loading navigation facilities. page-19
+4. Why navigation properties will be collection type such ICollection
+Ans: Because it can take multiple entity one to many relation. page-19
+5. After declare a property in a class why we use ‘?’ mark       Ans: That mean property is nullable. page-20
+6. which property can specify entity set     Ans: Dbset page-22
+7. Which one is crosponts with Database table?     Ans: Enitity set page-22
+8. Which one is crosponts with Database table row?    Ans: Entity page-22
+9. Where we define connection string name in context class?   Ans: On Constractor. page-22
+10. By default EF create table name plurize, how we can remove it/make single name Ans: Remove comment. page-22
+11. Which method insert test data Ans: seed method page-23
+12. How can I disable database inistization from web config? Ans: disable database inistization = true page-25
+13. How can I disable database inistization from Application_Start method in global.aspx(alternative of q12)
+Ans: Database.SetInitializer page-25
+14. If we want to create mdf/database in App_Data folder then what will we deline in connection string?
+Ans: AttachDBFilename =|DataDirectory| page-26
+15. What thing specify by Default rought   Ans: Controller/Action/id page-38
+16. If we add[AntiForgeneToken]  in a action method when what things we need to specify or related view page
+Ans: Html.AntiForenToken page-42
+17. Which command generate the Migration folder?   Ans: Enable-Migrations page-94
+18. Which command generate Configuration.cs file? Ans: Enable-Migrations page-94
+19. Which one is more secure option in to bind data in action method(include, exclude)?   Ans: include page-43
+20. Which one is not Enitity state  Ans: Update  page-47
+21. Which one is Entity framework default inhitentenc pattern? Ans: TPH page-251
+22. Which inhitentence pattern create complex query      Ans: TPT page-251
+23. Which inhitentence do better performance?   Ans: TPH page-251
+24. In EF Linq how can I write direct SQL query?   Ans: Database.SQLQuery() page-263, 264
+25. In EF Linq how can I write direct Non SQL query comment(Insert/update/delete)
+Ans: Database.Execute.SQLCommand page-264
+26. Which method return Entity type?    Ans: DbSet.SQLQuery page-264
+27. By default all entity query are chashed in memory. How to disable it?   Ans: How to select AsNotTracking page-273
+28. Test driven code writing easyer in which framework(no need to write repository code)   Ans: EF6 page-218
+29. How to turn off auto driect change?    Ans: AutodetectChangesEnabled page-286
+30. How to turn off auto validation by which property?    Ans: ValidateOnSeveEnabled page-286
+31. For creating datamodel diagram in VS which addon you should use?  Ans: Entity framework power tools page-286

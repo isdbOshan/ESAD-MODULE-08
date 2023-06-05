@@ -1,0 +1,16 @@
+﻿@model SpecInputModel
+<div class="form-group row mb-1">
+    <div class="col-6">
+        <label asp-for="SpecName"></label>
+        <input type="text" asp-for="SpecName" class="form-control" />
+        <span asp-validation-for="SpecName" class="text-danger"></span>
+    </div>
+    <div class="col-5">
+        <label asp-for="Value"></label>
+        <input type="text" asp-for="Value" class="form-control" />
+        <span asp-validation-for="Value" class="text-danger"></span>
+    </div>
+    <div class="col-1">
+        <button type="button" id="add" class="btn btn-secondary btn-sm mt-4">Add</button>
+    </div>
+</div>

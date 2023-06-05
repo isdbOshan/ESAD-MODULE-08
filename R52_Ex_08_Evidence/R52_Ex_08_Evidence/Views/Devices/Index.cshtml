@@ -1,0 +1,85 @@
+﻿@model IEnumerable<Device>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h3>Devices</h3>
+        <div class="d-flex justify-content-end mb-1">
+            <a asp-controller="Devices" asp-action="Create" class="btn btn-primary btn-sm">Create New</a>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Device Name</th>
+                    <th>Release Date</th>
+                    <th>Price</th>
+                    <th>On Sale?</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var d in Model)
+                {
+                    <tr id="tr_d_@d.DeviceId">
+                        <td><img src="~/Pictures/@d.Picture" class="rounded-circle" style="width:40px" /></td>
+                        <td>@d.DeviceName</td>
+                        <td>@d.ReleaseDate.ToString("yyyy-MM-dd")</td>
+                        <td>@d.Price.ToString("0.00")</td>
+                        <td>@(d.OnSale ? "Yes": "No")</td>
+                        <td>
+                            <a asp-controller="Devices" asp-action="Edit" asp-route-id="@d.DeviceId" class="btn btn-success btn-sm">Edit</a>
+                            <button type="button" data-pk="@d.DeviceId" class="btn btn-danger btn-sm d-del">Delete</button>
+                        </td>
+                    </tr>
+                    <tr id="tr_s_@d.DeviceId">
+                        <td>&nbsp;</td>
+                        <td colspan="5">
+                            <h4>Specs</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Spec</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                @foreach(var s in d.Specs)
+                                {
+                                    <tr>
+                                        <td>@s.SpecName</td>
+                                        <td>@s.Value</td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section scripts
+{
+    <script src="~/libs/validate/jquery.validate.min.js"></script>
+    <script>
+        $(".d-del").click(function(){
+            var id = $(this).data('pk');
+            
+            if(confirm("Are you sure to delete?")){
+                $.ajax({
+                    type:'post',
+                    url: '/Devices/Delete/'+id,
+                    dataType:'json',
+                   success:r=>{
+                       if(r.success==true){
+                          $("#tr_d_"+id).remove();
+                          $("#tr_s_"+id).remove();
+                       }
+                   }
+                })
+            }
+        })
+    </script>
+}

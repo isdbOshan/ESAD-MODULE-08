@@ -1,0 +1,16 @@
+﻿@model Experience
+<div class="form-group row mb-1">
+    <div class="col-6">
+        <label asp-for="ExperienceName"></label>
+        <input type="text" asp-for="ExperienceName" class="form-control" />
+        <span asp-validation-for="ExperienceName" class="text-danger"></span>
+    </div>
+    <div class="col-5">
+        <label asp-for="ExperienceDescription"></label>
+        <input type="text" asp-for="ExperienceDescription" class="form-control" />
+        <span asp-validation-for="ExperienceDescription" class="text-danger"></span>
+    </div>
+    <div class="col-1">
+       <button type="button" id="add" class="btn btn-outline-success btn-sm mt-4">Add</button>
+    </div>
+</div>

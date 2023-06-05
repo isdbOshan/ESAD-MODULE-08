@@ -1,0 +1,188 @@
+﻿@model DeviceInputModel
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h3>Create device</h3>
+
+
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" id="alert" style="display:none">
+            <span id="msg"><strong>Error</strong></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <form id="f1" data-ajax="true"
+              data-ajax-method="POST"
+              data-ajax-mode="replace"
+              data-ajax-success="onSuccess"
+              data-ajax-failure="onFail">
+            <div class="form-group row mb-1">
+                <label asp-for="DeviceName" class="col-form-label col-2 text-end"></label>
+                <div class="col-4">
+                    <input type="text" asp-for="DeviceName" class="form-control" />
+                    <span asp-validation-for="DeviceName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row mb-1">
+                <label asp-for="ReleaseDate" class="col-form-label col-2 text-end"></label>
+                <div class="col-4">
+                    <input type="text" asp-for="ReleaseDate" class="form-control date" />
+                    <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <div class="form-group row mb-1">
+                <label asp-for="Price" class="col-form-label col-2 text-end"></label>
+                <div class="col-4">
+                    <input type="number" asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row mb-1">
+                @Html.LabelFor(c => c.Picture, new { @class = "col-form-label col-2" })
+                <div class="col-4">
+                    <input type="file" id="pic" class="form-control" />
+                    @Html.HiddenFor(c => c.Picture, new { value = "" })
+                    <span asp-validation-for="Picture" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row mb-1">
+                @Html.LabelFor(c => c.OnSale, new { @class = "col-form-label col-2" })
+                <div class="col-4">
+                    @Html.CheckBoxFor(c => c.OnSale, new { @class = "mt-2" })
+
+                </div>
+            </div>
+            
+            <div class="form-group row mb-1">
+
+                <h4>Specs</h4>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Spec</th>
+                            <th>Value</th>
+                          
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableQ">
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-group row mb-1">
+
+                <div class="col-12 text-end">
+                    <button type="button" id="save" class="btn btn-primary">Save</button>
+
+                </div>
+            </div>
+        </form>
+        <form id="f2">
+            <h4>Specs</h4>
+            <div>
+                @await Html.PartialAsync("_AddSpec", new SpecInputModel())
+            </div>
+        </form>
+    </div>
+</div>
+@section scripts
+    {
+    @await Html.PartialAsync("_ScriptsPartial")
+    <script type="text/javascript">
+        var specs = [];
+        $.validator.setDefaults({
+            ignore: ""
+        });
+        $(".date").datepicker({
+            format: 'yyyy-mm-dd'
+        });
+        $(document).on("click", "button.del", function(){
+            var i = $(this).data("index");
+            $(this).parent().parent().remove();
+            specs.splice(i, 1);
+        });
+       
+        $("#save").click(()=>{
+           
+            if (!$("#f1").valid()) return;
+            var device = { DeviceName: $("#DeviceName").val(), ReleaseDate: $("#ReleaseDate").val(), 
+            Price:$("#Price").val(),
+            OnSale: document.getElementById("OnSale").checked,
+                Picture: $("#Picture").val()
+            };
+            device.Specs = specs;
+            //console.log(device);
+            $.ajax({
+                type: 'post',
+                url: '/devices/Create',
+                dataType:'json',
+                data: {model:device},
+                success:r=>{
+                    $("#msg").html("<strong>Success!</strong> data inserted.");
+                    $("#alert").show();
+                    $("#f1").trigger('reset');
+                    $("#f2").trigger('reset');
+                    specs = [];
+                    makeTable();
+                }
+            })
+        });
+        $("#pic").change(() => {
+            if (document.getElementById("pic").files.length) {
+                $("#Picture").val(document.getElementById("pic").files[0].name);
+                var formData = new FormData();
+
+                // Attach file
+                formData.append('Picture', document.getElementById("pic").files[0]);
+                $.ajax({
+                    url: '/Devices/Upload',
+                    data: formData,
+                    type: 'POST',
+                    contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+                    processData: false, // NEEDED, DON'T OMIT THIS
+                    success: r => {
+                        console.log(r);
+                        $("#Picture").val(r.saved);
+                    },
+                    error: err => {
+                        $("#msg").html("<strong>Error</strong> failed to upload.");
+                        $("#alert").show();
+                    }
+                });
+            }
+
+        });
+        $("#add").click(() => {
+            let ok = $("#f2").valid();
+            console.log(ok);
+            if (ok) {
+                specs.push({ SpecName: $("#SpecName").val(), Value: $("#Value").val() });
+                makeTable();
+                $("#f2").trigger('reset');
+            }
+        })
+        function makeTable() {
+            console.log(specs);
+            $("#tableQ").empty();
+            specs.forEach((v, i) => {
+                $("#tableQ").append(`<tr >
+                            <td>${v.SpecName}</td>
+                            <td>${v.Value}</td>
+                            
+                            <td><button type="button" data-index="${i}" class="btn btn-danger btn-sm del">Delete</button></td>
+                        </tr>`);
+            })
+        }
+        function onSuccess(r) {
+            
+            
+        }
+        function onFail(err) {
+            console.log(err);
+        }
+    </script>
+}
+

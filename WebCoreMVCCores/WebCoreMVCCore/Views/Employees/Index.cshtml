@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Employee>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2>Employees</h2>
+
+        <div class="d-flex justify-content-lg-start mb-2">
+            <a asp-controller="Employees" asp-action="Create" class="btn btn-primary">Create New One</a>
+        </div>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Picture</th>
+                    <th>EmployeeName</th>
+                    <th>JoinDate</th>
+                    <th>WorkHome</th>
+                    <th>Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var em in Model)
+                {
+                    <tr>
+                        <td><img src="~/Pictures/@em.Picture" class="img-fluid" style="width:50px" /></td>
+                        <td>@em.EmployeeName</td>
+                        <td>@em.JoinDate</td>
+                        <td>@em.WorkHome</td>
+                        <td>@em.Salary</td>
+                            <td>
+                            <a asp-controller="Employees" asp-action="Edit" asp-route-id="@em.EmployeeId" class="btn btn-success btn-sm">Update</a>
+                            <a asp-controller="Employees" asp-action="Delete" asp-route-id="@em.EmployeeId" class="btn btn-danger btn-sm">Remove</a>
+                            </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td colspan="5"></td>
+                        <p>Experience</p>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Experience Name</th>
+                                    <th>Experience Description</th>
+                                </tr>
+                            </thead>
+                            @foreach(var ex in em.Experience)
+                            {
+                                <tr>
+                                    <td>@ex.ExperienceName</td>
+                                    <td>@ex.ExperienceDescription</td>
+                                </tr>
+                            }
+                        </table>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+     </div>
+</div>

@@ -1,0 +1,198 @@
+﻿@model EmployeeInputModel
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h3>Create Employee Information</h3>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" id="alert" style="display:none">
+            <span id="msg"><strong>Error</strong></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <form id="f1" data-ajax="true"
+              data-ajax-method="POST"
+              data-ajax-mode="replace"
+              data-ajax-success="onSuccess"
+              data-ajax-failure="onFail">
+            <div class="form-group row mb-1">
+                <label asp-for="EmployeeName" class="col-form-label col-2 text-end"></label>
+                <div class="col-4">
+                    <input type="text" asp-for="EmployeeName" class="form-control" />
+                    <span asp-validation-for="EmployeeName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row mb-1">
+                <label asp-for="JoinDate" class="col-form-label col-2 text-end"></label>
+                <div class="col-4">
+                    <input type="text" asp-for="JoinDate" class="form-control date" />
+                    <span asp-validation-for="JoinDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row mb-1">
+                <label asp-for="Salary" class="col-form-label col-2 text-end"></label>
+                <div class="col-4">
+                    <input type="number" asp-for="Salary" class="form-control" />
+                    <span asp-validation-for="Salary" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row mb-1">
+                @Html.LabelFor(c => c.Picture, new { @class = "col-form-label col-2" })
+                <div class="col-4">
+                    <input type="file" id="pic" class="form-control" />
+                    @Html.HiddenFor(c => c.Picture, new { value = "" })
+                    <span asp-validation-for="Picture" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row mb-1">
+                @Html.LabelFor(c => c.WorkHome, new { @class = "col-form-label col-2" })
+                <div class="col-4">
+                    @Html.CheckBoxFor(c => c.WorkHome, new { @class = "mt-2" })
+
+                </div>
+            </div>
+
+            <div class="form-group row mb-1">
+
+                <h4>Experiences</h4>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Experice Name</th>
+                            <th>Expericen Description</th>
+
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableExp">
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-group row mb-1">
+
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-primary">Save</button>
+
+                </div>
+            </div>
+        </form>
+        <form id="f2">
+            <h4>Experience</h4>
+            <div>
+                @await Component.InvokeAsync("AddExperience")
+            </div>
+        </form>
+    </div>
+</div>
+@section scripts
+    {
+    @*@await Html.PartialAsync("ScriptPartialViewLink")*@
+    <script src="~/libs/validate/jquery.validate.min.js"></script>
+<script src="~/libs/validate/jquery.validate.unobtrusive.js"></script>
+<script src="~/libs/ajax/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/libs/picker/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript">
+        var exp = [];
+        $.validator.setDefaults({
+            ignore: ""
+        });
+        $(".date").datepicker({
+            format: 'yyyy-mm-dd'
+        });
+        $(document).on("click", "button.del", function () {
+            var i = $(this).data("index");
+            $(this).parent().parent().remove();
+            exp.splice(i, 1);
+        });
+        $("#f1").submit(evt => {
+            console.log(evt);
+            console.log(exp.length)
+            if (exp.length == 0) {
+                console.log(exp);
+                evt.preventDefault();
+                return false;
+                $("#msg").html("<strong>Error</strong> at least one spec reqired.");
+                $("#alert").show();
+            }
+        })
+        $("#pic").change(() => {
+            if (document.getElementById("pic").files.length) {
+                $("#Picture").val(document.getElementById("pic").files[0].name);
+                var formData = new FormData();
+
+             
+                formData.append('Picture', document.getElementById("pic").files[0]);
+                $.ajax({
+                    url: '/Employees/Upload',
+                    data: formData,
+                    type: 'POST',
+                    contentType: false, 
+                    processData: false, 
+                    success: r => {
+                        console.log(r);
+                        $("#Picture").val(r.saved);
+                    },
+                    error: err => {
+                        $("#msg").html("<strong>Error</strong> failed to upload.");
+                        $("#alert").show();
+                    }
+                });
+            }
+
+        });
+        $("#add").click(() => {
+            let ok = $("#f2").valid();
+            console.log(ok);
+            if (ok) {
+                exp.push({ ExperienceName: $("#ExperienceName").val(), ExperienceDescription: $("#ExperienceDescription").val() });
+                makeTable();
+                $("#f2").trigger('reset');
+            }
+        })
+        function makeTable() {
+            console.log(exp);
+            $("#tableExp").empty();
+            exp.forEach((v, i) => {
+                $("#tableExp").append(`<tr >
+                                    <td>${v.ExperienceName}</td>
+                                            <td>${v.ExperienceDescription}</td>
+
+                                    <td><button type="button" data-index="${i}" class="btn btn-danger btn-sm del">Delete</button></td>
+                                </tr>`);
+            })
+        }
+        function onSuccess(r) {
+            console.log(r);
+            console.log(exp);
+            if (r && r.id > 0) {
+                $.ajax({
+                    type: "post",
+                    url: "/Employees/SaveExp/" + r.id,
+                    dataType: "json",
+                    data: { exp: exp },
+                    success: r => {
+                        console.log(r);
+                        if (r.success == true) {
+                            $("#msg").html("<strong>Success!</strong> data inserted.");
+                            $("#alert").show();
+                            $("#f1").trigger('reset');
+                            $("#f2").trigger('reset');
+                            exp = [];
+                            makeTable();
+                        }
+                    }
+
+                })
+            }
+        }
+        function onFail(err) {
+            alert("Data cann't loaded")
+            console.log(err);
+        }
+    </script>
+}
+
+
+
